@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Lectura del mensaje de commit
+commit_msg=$(cat "$1")
+
+# Tipos de commit válidos
+valid_types="feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert"
+
+# Expresión regular para validar el formato
+# Formato: type(scope)?: mensaje
+# Ejemplo: feat(auth): agregar login seguro
+if ! echo "$commit_msg" | head -1 | grep -qE "^($valid_types)(\(.+\))?!?: .{1,}"; then
+  echo ""
+  echo "❌ Error: Formato de commit inválido"
+  echo ""
+  echo "Formatos válidos:"
+  echo "  feat: descripción"
+  echo "  fix(scope): descripción"
+  echo "  docs: descripción"
+  echo "  style(scope): descripción"
+  echo "  refactor: descripción"
+  echo "  perf(auth): descripción"
+  echo "  test: descripción"
+  echo "  build(deps): descripción"
+  echo "  ci: descripción"
+  echo "  chore: descripción"
+  echo "  revert: descripción"
+  echo ""
+  echo "Tipos válidos: $valid_types"
+  echo ""
+  exit 1
+fi
+
+# Validar longitud máxima de la primera línea
+if [ $(echo "$commit_msg" | head -1 | wc -c) -gt 101 ]; then
+  echo "❌ Error: El mensaje es demasiado largo (máximo 100 caracteres)"
+  exit 1
+fi
+
+exit 0
